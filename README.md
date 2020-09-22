@@ -2,6 +2,12 @@
 
 이미지 프로세싱을 위한 Keras를 사용하는데 필요한 보조 도구
 
+## 설치
+
+```shell
+pip install image-keras
+```
+
 ## 요구사항
 
 * Python &ge; 3.7
