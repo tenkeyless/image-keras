@@ -6,7 +6,7 @@ from os.path import abspath, dirname, normpath
 
 import toolz
 from toolz import curried
-import common_py
+import image_keras
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -63,7 +63,7 @@ setuptools.setup(
     cmdclass={
         "clean": CleanCommand,
     },
-    version=common_py.__version__,
+    version=image_keras.__version__,
     author="TenKeyLess",
     author_email="blivme84@naver.com",
     description="The fundamental package needed for common purpose with Python.",
