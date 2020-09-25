@@ -1,5 +1,6 @@
 import os
 from abc import ABC, ABCMeta, abstractmethod
+from itertools import tee
 from typing import Callable, Generator, List, Optional, Tuple
 
 import cv2
@@ -7,7 +8,10 @@ import numpy as np
 import toolz
 from keras.preprocessing.image import ImageDataGenerator
 
-from image_keras.batch_transform import generate_iterator_and_transform
+from image_keras.batch_transform import (
+    dist_generate_iterator_and_transform,
+    generate_iterator_and_transform,
+)
 from image_keras.flow_directory import FlowFromDirectory
 from image_keras.utils.generator import zip_generators
 from image_keras.utils.image_transform import InterpolationEnum, img_resize
@@ -52,12 +56,12 @@ class FlowManager:
         flow_from_directory: FlowFromDirectory,
         resize_to: Tuple[int, int],
         resize_interpolation: InterpolationEnum = InterpolationEnum.inter_nearest,
-        image_data_generator: ImageDataGenerator = ImageDataGenerator(),
         image_transform_function: Optional[Callable[[np.ndarray], np.ndarray]] = None,
         each_transformed_image_save_function_optional: Optional[
             Callable[[int, int, np.ndarray], None]
         ] = None,
         transform_function_for_all: Optional[Callable[[np.ndarray], np.ndarray]] = None,
+        image_data_generator: ImageDataGenerator = ImageDataGenerator(),
     ):
         """
         디렉토리에서 파일을 불러오는 매니저입니다.
@@ -80,8 +84,8 @@ class FlowManager:
             변환 함수. 배치 전체에 대한 변환 함수, by default None
         """
         self.flow_from_directory: FlowFromDirectory = flow_from_directory
-        self.resize_to: Tuple[int, int] = resize_to
         self.image_data_generator: ImageDataGenerator = image_data_generator
+        self.resize_to: Tuple[int, int] = resize_to
         _image_transform_function = lambda img: img
         if image_transform_function is not None:
             _image_transform_function = image_transform_function
@@ -94,6 +98,48 @@ class FlowManager:
             each_transformed_image_save_function_optional
         )
         self.transform_function_for_all = transform_function_for_all
+
+
+class Distributor:
+    def __init__(
+        self,
+        resize_to: Tuple[int, int],
+        resize_interpolation: InterpolationEnum = InterpolationEnum.inter_nearest,
+        image_transform_function: Optional[Callable[[np.ndarray], np.ndarray]] = None,
+        each_transformed_image_save_function_optional: Optional[
+            Callable[[int, int, np.ndarray], None]
+        ] = None,
+        transform_function_for_all: Optional[Callable[[np.ndarray], np.ndarray]] = None,
+    ):
+        self.resize_to = resize_to
+        self.resize_interpolation = resize_interpolation
+        self.image_transform_function = image_transform_function
+        self.each_transformed_image_save_function_optional = (
+            each_transformed_image_save_function_optional
+        )
+        self.transform_function_for_all = transform_function_for_all
+
+
+class DistFlowManager:
+    def __init__(
+        self,
+        flow_from_directory: FlowFromDirectory,
+        distributors: List[Distributor],
+        image_data_generator: ImageDataGenerator = ImageDataGenerator(),
+    ):
+        """
+        디렉토리에서 파일을 불러오는 매니저입니다.
+
+        Parameters
+        ----------
+        flow_from_directory : FlowFromDirectory
+            디렉토리부터 이미지를 읽어올 FlowFromDirectory를 지정합니다.
+        image_data_generator : ImageDataGenerator
+            ImageDataGenerator, by default ImageDataGenerator()
+        """
+        self.flow_from_directory: FlowFromDirectory = flow_from_directory
+        self.image_data_generator: ImageDataGenerator = image_data_generator
+        self.distributors: List[Distributor] = distributors
 
 
 class InOutGenerator(ABC, metaclass=ABCMeta):
@@ -198,6 +244,102 @@ class BaseInOutGenerator(InOutGenerator):
                     transform_function_for_all=output_flow.transform_function_for_all,
                 )
                 output_generators.append(o_transformed_generator)
+            outputs_generator = map(list, zip_generators(output_generators))
+
+            return zip(inputs_generator, outputs_generator)
+        else:
+            return inputs_generator
+
+
+class DistInOutGenerator(InOutGenerator):
+    def __init__(
+        self,
+        input_flows: List[DistFlowManager],
+        output_flows: List[DistFlowManager] = [],
+    ):
+        self.__input_flows = input_flows
+        self.__output_flows = output_flows
+        self.__i_generator = None
+
+    @property
+    def input_flows(self) -> List[DistFlowManager]:
+        return self.__input_flows
+
+    @property
+    def output_flows(self) -> List[DistFlowManager]:
+        raise self.__output_flows
+
+    def get_samples(self) -> int:
+        """
+        데이터의 샘플 수를 반환합니다.
+
+        `get_generator()` 메소드를 실행 후 반환 가능합니다. 실행하지 않은 경우, 0을 반환합니다.
+
+        Returns
+        -------
+        int
+            데이터의 샘플 수
+        """
+        return self.__i_generator.samples if self.__i_generator is not None else 0
+
+    def get_filenames(self) -> List[str]:
+        """
+        데이터의 파일 이름을 반환합니다.
+
+        `get_generator()` 메소드를 실행 후 반환 가능합니다. 실행하지 않은 경우, 비어있는 리스트 []를 반환합니다.
+
+        Returns
+        -------
+        List[str]
+            데이터의 파일 이름 리스트
+        """
+        return self.__i_generator.filenames if self.__i_generator is not None else []
+
+    def get_generator(self) -> Generator:
+        """
+        입력 및 출력 Generator를 생성 및 반환합니다.
+
+        - `input_flows`만 지정된 경우, Generator[[입력 image 1], [입력 image 2], ...]가 반환됩니다.
+        - 둘 다 지정된 경우, Generator[[[입력 image 1], [입력 image 2], ...], [[출력 image 1], [출력 image 2], ...]]가 반환됩니다.
+
+        Returns
+        -------
+        Generator
+            입출력 Generator
+        """
+        input_generators: List[Generator] = []
+        for index, input_flow in enumerate(self.__input_flows):
+            i_generator = input_flow.flow_from_directory.get_iterator(
+                input_flow.image_data_generator
+            )
+            if index == 0:
+                self.__i_generator = i_generator
+            for distributor in input_flow.distributors:
+                i_generator, i_generator_copy = tee(i_generator)
+                i_transformed_generator: Generator = dist_generate_iterator_and_transform(
+                    image_generator=i_generator_copy,
+                    each_image_transform_function=distributor.image_transform_function,
+                    each_transformed_image_save_function_optional=distributor.each_transformed_image_save_function_optional,
+                    transform_function_for_all=distributor.transform_function_for_all,
+                )
+                input_generators.append(i_transformed_generator)
+        inputs_generator = map(list, zip_generators(input_generators))
+
+        if len(self.__output_flows) > 0:
+            output_generators: List[Generator] = []
+            for output_flow in self.__output_flows:
+                o_generator = output_flow.flow_from_directory.get_iterator(
+                    output_flow.image_data_generator
+                )
+                for distributor in output_flow.distributors:
+                    o_generator, o_generator_copy = tee(o_generator)
+                    o_transformed_generator: Generator = dist_generate_iterator_and_transform(
+                        image_generator=o_generator_copy,
+                        each_image_transform_function=distributor.image_transform_function,
+                        each_transformed_image_save_function_optional=distributor.each_transformed_image_save_function_optional,
+                        transform_function_for_all=distributor.transform_function_for_all,
+                    )
+                    output_generators.append(o_transformed_generator)
             outputs_generator = map(list, zip_generators(output_generators))
 
             return zip(inputs_generator, outputs_generator)
