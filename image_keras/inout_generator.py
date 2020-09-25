@@ -139,7 +139,7 @@ class DistFlowManager:
         """
         self.flow_from_directory: FlowFromDirectory = flow_from_directory
         self.image_data_generator: ImageDataGenerator = image_data_generator
-        self.distributors: Distributor = distributors
+        self.distributors: List[Distributor] = distributors
 
 
 class InOutGenerator(ABC, metaclass=ABCMeta):
@@ -254,19 +254,19 @@ class BaseInOutGenerator(InOutGenerator):
 class DistInOutGenerator(InOutGenerator):
     def __init__(
         self,
-        input_flows: List[FlowManager],
-        output_flows: List[FlowManager] = [],
+        input_flows: List[DistFlowManager],
+        output_flows: List[DistFlowManager] = [],
     ):
         self.__input_flows = input_flows
         self.__output_flows = output_flows
         self.__i_generator = None
 
     @property
-    def input_flows(self) -> List[FlowManager]:
+    def input_flows(self) -> List[DistFlowManager]:
         return self.__input_flows
 
     @property
-    def output_flows(self) -> List[FlowManager]:
+    def output_flows(self) -> List[DistFlowManager]:
         raise self.__output_flows
 
     def get_samples(self) -> int:
