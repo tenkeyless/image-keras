@@ -104,3 +104,58 @@ def generate_iterator_and_transform(
             if transform_function_for_all:
                 batch_image = transform_function_for_all(batch_image)
             yield batch_image
+
+
+def dist_generate_iterator_and_transform(
+    image_generator: Iterator,
+    each_image_transform_function: Optional[Callable[[np.ndarray], np.ndarray]] = None,
+    each_transformed_image_save_function_optional: Optional[
+        Callable[[int, int, np.ndarray], None]
+    ] = None,
+    transform_function_for_all: Optional[Callable[[np.ndarray], np.ndarray]] = None,
+) -> Iterator:
+    """
+    `image_from_directory`에 대해, (선택) (이미지 변환을 적용하고, 변환 결과를 저장한 다음), iterator로 출력
+
+    배치 내 각 개별 이미지에 대해 변환 함수(`batch_transform_function`)가 적용된 후,
+    배치 전체에 대한 변환 함수(`transform_function_for_all`)가 적용됩니다.
+
+    Parameters
+    ----------
+    image_generator : Iterator
+        파일을 가져올 `Iterator`
+    each_image_transform_function : Optional[Callable[[np.ndarray], np.ndarray]], optional
+        배치 내 이미지 변환 함수. 변환 함수가 지정되지 않으면, 변환 없이 그냥 내보냅니다.
+    each_transformed_image_save_function_optional : Optional[Callable[[int, int, np.ndarray], None]], optional
+        샘플 인덱스 번호, 배치 번호 및 이미지를 입력으로 하는 저장 함수, by default None
+        `each_image_transform_function()` 메서드가 존재해야 동작합니다.
+    transform_function_for_all : Optional[Callable[[np.ndarray], np.ndarray]], optional
+        변환 함수. 배치 전체에 대한 변환 함수
+
+    Yields
+    -------
+    Iterator
+        `image_from_directory`의 generator을 가져와 변환(혹은 변환되지 않은)을 적용한 iterator
+    """
+    if each_image_transform_function:
+        for index, batch_image in enumerate(image_generator):
+            each_transformed_image_save_function_optional2 = None
+            if each_transformed_image_save_function_optional:
+                each_transformed_image_save_function_optional2 = toolz.curry(
+                    each_transformed_image_save_function_optional
+                )(index)
+            batch_image = transform_for_batch(
+                batch_img=batch_image,
+                each_image_transform_function=get_or_else(
+                    each_image_transform_function, lambda v: v
+                ),
+                each_transformed_image_save_function_optional=each_transformed_image_save_function_optional2,
+            )
+            if transform_function_for_all:
+                batch_image = transform_function_for_all(batch_image)
+            yield batch_image
+    else:
+        for batch_image in image_generator:
+            if transform_function_for_all:
+                batch_image = transform_function_for_all(batch_image)
+            yield batch_image
