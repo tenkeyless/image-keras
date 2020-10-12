@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-from keras.preprocessing.image import DirectoryIterator, ImageDataGenerator
+from tensorflow.keras.preprocessing.image import DirectoryIterator, ImageDataGenerator
 
 
 class FlowFromDirectory:

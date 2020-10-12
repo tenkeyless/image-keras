@@ -1,9 +1,9 @@
 from typing import Optional
 
-import keras
+from tensorflow.keras.models import Model
 
 
-def save_model(model_name: str, model: keras.models.Model):
+def save_model(model_name: str, model: Model):
     """
     모델을 저장합니다.
 
@@ -24,9 +24,7 @@ def save_model(model_name: str, model: keras.models.Model):
         json_file.write(model_json)
 
 
-def load_model(
-    model_name: str, with_weights_path: Optional[str] = None
-) -> keras.models.Model:
+def load_model(model_name: str, with_weights_path: Optional[str] = None) -> Model:
     """
     모델을 불러옵니다.
 
