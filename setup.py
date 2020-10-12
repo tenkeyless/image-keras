@@ -45,8 +45,8 @@ setup_requires = []
 
 requirements = [
     ("toolz", "0.10.0"),
-    ("Keras", "2.3.1"),
-    ("tensorflow", "2.1.0"),
+    ("Keras", "2.4.0"),
+    ("tensorflow", "2.3.1"),
     ("common-py", "0.1.4"),
 ]
 

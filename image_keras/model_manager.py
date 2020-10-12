@@ -1,9 +1,9 @@
 from typing import List, Optional, Tuple
 
-from keras.losses import Loss
-from keras.metrics import Metric
-from keras.models import Model
-from keras.optimizers import Optimizer
+from tensorflow.keras.losses import Loss
+from tensorflow.keras.metrics import Metric
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import Optimizer
 
 
 class LossDescriptor:

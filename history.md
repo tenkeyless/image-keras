@@ -1,5 +1,14 @@
 # Version History
 
+## 0.2.0
+
+- Date
+  - 2020-10-12
+- Contents
+  - TensorFlow 2.3.1+
+  - Keras 2.4.0+
+  - keras -> tf.keras
+
 ## 0.1.1
 
 - Date

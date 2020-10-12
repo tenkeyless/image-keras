@@ -6,7 +6,7 @@ from typing import Callable, Generator, List, Optional, Tuple
 import cv2
 import numpy as np
 import toolz
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from image_keras.batch_transform import (
     dist_generate_iterator_and_transform,

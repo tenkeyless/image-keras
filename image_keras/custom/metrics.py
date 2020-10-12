@@ -1,6 +1,6 @@
 import keras.backend as K
 import tensorflow as tf
-from keras.metrics import MeanMetricWrapper
+from tensorflow.python.keras.metrics import MeanMetricWrapper
 
 
 class BinaryClassMeanIoU(MeanMetricWrapper):

@@ -1,4 +1,4 @@
-from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
 
 class EarlyStoppingAfter(EarlyStopping):
@@ -9,7 +9,7 @@ class EarlyStoppingAfter(EarlyStopping):
     ----------
     EarlyStopping : [type]
         [description]
-    
+
     Examples
     --------
     >>> apply_callbacks_after: int = 0
@@ -33,7 +33,13 @@ class EarlyStoppingAfter(EarlyStopping):
         after_epoch=100,
     ):
         super(EarlyStoppingAfter, self).__init__(
-            monitor, min_delta, patience, verbose, mode, baseline, restore_best_weights
+            monitor=monitor,
+            min_delta=min_delta,
+            patience=patience,
+            verbose=verbose,
+            mode=mode,
+            baseline=baseline,
+            restore_best_weights=restore_best_weights,
         )
         self.after_epoch = after_epoch
 
@@ -80,11 +86,17 @@ class ModelCheckpointAfter(ModelCheckpoint):
         save_best_only=False,
         save_weights_only=False,
         mode="auto",
-        period=1,
+        save_freq="epoch",
         after_epoch=100,
     ):
         super(ModelCheckpointAfter, self).__init__(
-            filepath, monitor, verbose, save_best_only, save_weights_only, mode, period
+            filepath,
+            monitor=monitor,
+            verbose=verbose,
+            save_best_only=save_best_only,
+            save_weights_only=save_weights_only,
+            mode=mode,
+            save_freq=save_freq,
         )
         self.after_epoch = after_epoch
 
@@ -130,14 +142,14 @@ class ReduceLROnPlateauAfter(ReduceLROnPlateau):
         **kwargs
     ):
         super(ReduceLROnPlateauAfter, self).__init__(
-            monitor,
-            factor,
-            patience,
-            verbose,
-            mode,
-            min_delta,
-            cooldown,
-            min_lr,
+            monitor=monitor,
+            factor=factor,
+            patience=patience,
+            verbose=verbose,
+            mode=mode,
+            min_delta=min_delta,
+            cooldown=cooldown,
+            min_lr=min_lr,
             **kwargs
         )
         self.after_epoch = after_epoch
