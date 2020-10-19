@@ -1,5 +1,13 @@
 # Version History
 
+## 0.2.3
+
+- Date
+  - 2020-10-19
+- Contents
+  - Add focal loss
+  - Add binary boundary loss
+
 ## 0.2.0
 
 - Date
