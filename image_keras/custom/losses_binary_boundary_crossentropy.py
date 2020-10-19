@@ -67,7 +67,7 @@ def binary_boundary_crossentropy(
     --------
     >>> from image_keras.custom.losses_binary_boundary_crossentropy import binary_boundary_crossentropy
     >>> import cv2
-    >>> a = cv2.imread("a.png", cv2.IMREAD_GRAYSCALE)
+    >>> a = cv2.imread("tests/test_resources/a.png", cv2.IMREAD_GRAYSCALE)
     >>> a_modified = (a / 255).reshape(1, a.shape[0], a.shape[1], 1)
     >>> binary_boundary_crossentropy(a_modified, a_modified, range=1, max=2)
     """
