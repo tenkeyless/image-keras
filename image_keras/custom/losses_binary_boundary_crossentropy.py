@@ -16,16 +16,22 @@ class BinaryBoundaryCrossentropy(LossFunctionWrapper):
         from_logits=False,
         label_smoothing=0,
         reduction=losses_utils.ReductionV2.AUTO,
+        range=1,
+        max=2.0,
         name="binary_boundary_crossentropy",
     ):
         super(BinaryBoundaryCrossentropy, self).__init__(
             binary_boundary_crossentropy,
             name=name,
             reduction=reduction,
+            range=range,
+            max=max,
             from_logits=from_logits,
             label_smoothing=label_smoothing,
         )
         self.from_logits = from_logits
+        self.range = range
+        self.max = max
 
 
 def binary_boundary_crossentropy(
