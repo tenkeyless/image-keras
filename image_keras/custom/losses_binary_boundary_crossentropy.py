@@ -39,7 +39,7 @@ def binary_boundary_crossentropy(
     y_pred,
     from_logits=False,
     label_smoothing=0,
-    range: int = 0,
+    range: int = 1,
     max: float = 2.0,
 ):
     """
