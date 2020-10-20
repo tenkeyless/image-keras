@@ -1,5 +1,12 @@
 # Version History
 
+## 0.2.5
+
+- Date
+  - 2020-10-20
+- Contents
+  - Fix fatal bug
+
 ## 0.2.4
 
 - Date
