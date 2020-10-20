@@ -117,14 +117,14 @@ def binary_boundary_crossentropy(
             tf.math.count_nonzero(same_values, axis=-1), tf.int32
         )
         result_1 = tf.reshape(result_1, (-1, tf.shape(arr)[1], tf.shape(arr)[2], 1))
-        result_1 = tf.cast(result_1, tf.int32)
-
+        result_1 = tf.cast(result_1, tf.float32)
+        result_1 += arr
         block_counts = tf.reshape(
             count_around_blocks(arr, range), (-1, tf.shape(arr)[1], tf.shape(arr)[2], 1)
         )
         modify_result_1 = -(size ** 2 - block_counts)
         modify_result_1 = modify_result_1 * arr
-        modify_result_1 = tf.cast(modify_result_1, tf.int32)
+        modify_result_1 = tf.cast(modify_result_1, tf.float32)
         diff_block_count = result_1 + modify_result_1
         return diff_block_count
 
