@@ -13,7 +13,7 @@ from image_keras.batch_transform import (
     generate_iterator_and_transform,
 )
 from image_keras.flow_directory import FlowFromDirectory
-from image_keras.utils.generator import zip_generators
+from image_keras.supports.generator import zip_generators
 from image_keras.utils.image_transform import InterpolationEnum, img_resize
 
 

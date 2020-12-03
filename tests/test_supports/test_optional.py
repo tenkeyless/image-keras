@@ -1,7 +1,7 @@
 from typing import Optional
 from unittest import TestCase
 
-from image_keras.utils import optional
+from image_keras.supports import optional
 
 
 class TestOptional(TestCase):

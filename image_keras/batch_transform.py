@@ -3,7 +3,7 @@ from typing import Callable, Iterator, Optional
 import numpy as np
 import toolz
 
-from image_keras.utils.optional import get_or_else
+from image_keras.supports.optional import get_or_else
 
 
 def transform_for_batch(
