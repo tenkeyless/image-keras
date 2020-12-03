@@ -173,3 +173,24 @@ python image_keras/run/run_mask_image.py \
     --mask_bw_image_path temp2_mask \
     --target_folder=temp3
 ```
+
+## Create image as frame
+
+Filename should be "[num]_*.png".
+
+```shell
+python image_keras/run/run_create_frame.py \
+    --full_image_abspath /Users/tklee/workspace/code/image-keras/000_03_07.png \
+    --num_prev_frame 2 \
+    --num_next_frame 2 \
+    --target_folder=temp3
+```
+
+```shell
+python image_keras/run/run_create_frame.py \
+    --full_image_abspath /Users/tklee/workspace/code/image-keras/temp \
+    --num_prev_frame 1 \
+    --num_next_frame 1 \
+    --common_folder_name img_ \
+    --target_folder=temp3
+```

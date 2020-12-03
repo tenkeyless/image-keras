@@ -80,16 +80,3 @@ if __name__ == "__main__":
             mask_bw_image_path=mask_bw_image_path,
             target_folder=target_folder,
         )
-
-
-# img = cv2.imread("000.png")
-# bw_img = img_color_to_bw(img)
-# cv2.imwrite("000_bw_2.png", bw_img)
-
-# # Edge draw
-# img_edge = draw__edge_only(img, 10)
-# cv2.imwrite("000_edge_2.png", img_edge)
-
-# # Mask with Edge
-# mask_with_image = draw__mask_with_edge(img, 10)
-# cv2.imwrite("000_mask_with_image_2.png", mask_with_image)
