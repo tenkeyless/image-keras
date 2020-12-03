@@ -124,3 +124,83 @@ def img_to_minmax(
     result_img[result_img > threshold] = min_max[1]
     result_img[result_img <= threshold] = min_max[0]
     return result_img
+
+
+def img_color_to_bw(cv2_color_img: np.ndarray) -> np.ndarray:
+    gray_img = cv2.cvtColor(cv2_color_img, cv2.COLOR_BGR2GRAY)
+    return cv2.threshold(gray_img, 1, 255, cv2.THRESH_BINARY)[1]
+
+
+def draw__edge_only(cv2_image: np.ndarray, edge_size: int) -> np.ndarray:
+    """
+    Get the edges from the image. (by `edge_size` using Canny, 100, 50)
+
+    .. image:: https://i.imgur.com/RKRgyFz.png
+        :width: 2496px
+        :height: 1018px
+        :scale: 25%
+        :alt: edge_detection
+        :align: center
+
+    Parameters
+    ----------
+    cv2_image : np.ndarray
+        BGR color image
+    edge_size : int
+        Edge size
+
+    Returns
+    -------
+    np.ndarray
+        Grayscale image with white edge line.
+
+    Examples
+    --------
+    >>> cv2_img: np.ndarray = cv2.imread("...")
+    >>> draw__edge_only(cv2_img, 10)
+    """
+    image_canny: np.ndarray = cv2.Canny(cv2_image, 100, 50)
+    all_one_kernel: np.ndarray = np.ones((edge_size, edge_size), np.uint8)
+    return cv2.dilate(image_canny, all_one_kernel, 1)
+
+
+def draw__mask_with_edge(cv2_image: np.ndarray, edge_size: int = 10) -> np.ndarray:
+    """
+    From a color image, get a black white image each instance separated by a border.
+
+    1. Change a color image to black white image.
+    2. Get edge image from `cv2_image`, then invert it to separate instance by a border.
+    3. Merge 1 and 2.
+
+    .. image:: https://i.imgur.com/YAHVVSl.png
+        :width: 2496px
+        :height: 1018px
+        :scale: 25%
+        :alt: mask_with_edge
+        :align: center
+
+    Parameters
+    ----------
+    cv2_image : np.ndarray
+        BGR color Image
+    edge_size : int
+        Edge size, by default 10
+
+    Returns
+    -------
+    np.ndarray
+        Grayscale image each instance separated by a border.
+
+    Examples
+    --------
+    >>> cv2_img: np.ndarray = cv2.imread("...")
+    >>> edge_masked_image: np.ndarray = mask_with_edge(cv2_img, edge_size=10)
+    """
+    img_edge = draw__edge_only(cv2_image, edge_size)
+    not_img_edge = cv2.bitwise_not(img_edge)
+    bw_image = img_color_to_bw(cv2_image)
+    return mask_image(bw_image, mask_image=not_img_edge)
+
+
+def mask_image(original_image, mask_image):
+    return cv2.bitwise_and(original_image, original_image, mask=mask_image)
