@@ -188,9 +188,9 @@ python image_keras/run/run_create_frame.py \
 
 ```shell
 python image_keras/run/run_create_frame.py \
-    --full_image_abspath /Users/tklee/workspace/code/image-keras/temp \
+    --full_image_abspath /tracking_net/dataset/tracking_training/image \
     --num_prev_frame 1 \
     --num_next_frame 1 \
-    --common_folder_name img_ \
-    --target_folder=temp3
+    --common_folder_name "" \
+    --target_folder=/tracking_net/dataset/tracking_training/framed_image
 ```
