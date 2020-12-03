@@ -8,6 +8,7 @@ from argparse import ArgumentParser
 import cv2
 from image_keras.supports.path import get_image_filenames, split_fullpath
 from image_keras.utils.image_slice import apply_each_slice, slice_by_pixel_size
+from natsort import natsorted
 
 
 def slice_and_write_single_image(
@@ -57,7 +58,7 @@ def slice_and_write_for_folder(
     target_folder,
 ):
     files = get_image_filenames(full_image_path)
-    files = sorted(files, key=lambda x: int(os.path.splitext(x)[0]))
+    files = natsorted(files)
     num_files = len(files)
     for index, file in enumerate(files):
         print("Processing {} ({}/{})...".format(file, (index + 1), num_files))
@@ -105,7 +106,7 @@ if __name__ == "__main__":
         "--target_folder",
         required=True,
         type=str,
-        help="Test folder. Sub directory of `data/`",
+        help="Target folder.",
     )
     args = parser.parse_args()
 

@@ -27,3 +27,21 @@ python image_keras/run/run_slice_image.py \
     --as_gray \
     --target_folder=temp
 ```
+
+## Resize Image
+
+Resize Image for a image file and a folder contains images.
+
+```shell
+python image_keras/run/run_resize_image.py \
+    --full_image_path temp/lenna_00_00.png \
+    --target_size=128 \
+    --target_folder=temp2
+```
+
+```shell
+python image_keras/run/run_resize_image.py \
+    --full_image_path temp \
+    --target_size=128 \
+    --target_folder=temp3
+```
