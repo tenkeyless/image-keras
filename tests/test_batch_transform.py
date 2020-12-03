@@ -3,7 +3,6 @@ from typing import Callable
 from unittest import TestCase
 
 import numpy as np
-
 from image_keras import batch_transform
 from image_keras.flow_directory import FlowFromDirectory, ImagesFromDirectory
 
@@ -54,7 +53,7 @@ class TestBatchTransform(TestCase):
         )
 
         # Result
-        result_samples: int = 3
+        result_samples: int = 4
 
         # Check
         self.assertEqual(image_generator.samples, result_samples)

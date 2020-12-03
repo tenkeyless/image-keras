@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
    image_keras.custom
+   image_keras.supports
    image_keras.utils
 
 Submodules
