@@ -36,8 +36,8 @@ class TestImageSlice(TestCase):
         )
 
         # Result
-        test_result_sliced_images_row_num = 8
-        test_result_sliced_images_col_num = 8
+        test_result_sliced_images_row_num = 7
+        test_result_sliced_images_col_num = 7
 
         def _check_image(row_num, col_num, sliced_img):
             print("{:02d}_{:02d}".format(row_num, col_num))
