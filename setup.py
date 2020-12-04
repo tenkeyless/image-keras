@@ -1,11 +1,12 @@
-import setuptools
-import os
 import glob
+import os
 import shutil
 from os.path import abspath, dirname, normpath
 
+import setuptools
 import toolz
 from toolz import curried
+
 import image_keras
 
 with open("README.md", "r") as fh:
@@ -47,7 +48,6 @@ requirements = [
     ("toolz", "0.10.0"),
     ("Keras", "2.4.0"),
     ("tensorflow", "2.3.1"),
-    ("common-py", "0.1.4"),
 ]
 
 install_requires = toolz.pipe(

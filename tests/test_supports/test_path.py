@@ -1,5 +1,4 @@
 import os
-from typing import Optional
 from unittest import TestCase
 
 from image_keras.supports import path
