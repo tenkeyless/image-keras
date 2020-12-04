@@ -11,7 +11,6 @@ from typing import Optional
 from image_keras.supports.folder import create_folder_if_not_exist, files_in_folder
 from image_keras.supports.list import list_diff, list_intersection
 from image_keras.supports.path import get_image_filenames, split_fullpath
-from image_keras.utils.image_transform import img_resize
 from natsort import natsorted
 
 
