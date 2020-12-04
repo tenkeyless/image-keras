@@ -1,5 +1,15 @@
 # Version History
 
+## 0.3.1
+
+- Date
+  - 2020-12-04
+- Contents
+  - Merge common-py
+  - Dockerfile supports for "run".
+  - Change structure for keras, tf.keras. Layers, metrics, losses.. added.
+  - Slack, sftp related update.
+
 ## 0.3
 
 - Date
