@@ -134,6 +134,30 @@ def tf_equalize_histogram(tf_img):
     return eq_hist
 
 
+def remove_element(tensor, element):
+    """
+    Remove single element from 'tensor'.
+
+    Parameters
+    ----------
+    tensor : `Tensor`
+        Input `Tensor`
+    element : `Tensor`
+        Element to remove.
+
+    Returns
+    -------
+    `Tensor`
+        Tensor after remove element
+
+    Examples
+    --------
+    >>> scs = remove_element(scs, [0, 0, 0])
+    """
+    check_element = tf.reduce_all(tf.equal(tensor, element), axis=-1)
+    return tf.boolean_mask(tensor, tf.math.logical_not(check_element))
+
+
 def tf_get_all_colors(tf_img):
     """
     Get all colors in `Tensor` image `tf_img`.
@@ -156,14 +180,16 @@ def tf_get_all_colors(tf_img):
     >>> sample_img = tf_images.decode_png("tests/test_resources/sample.png", 3)
     >>> print(tf_images.tf_get_all_colors(sample_img))
     tf.Tensor(
-    [[245. 245. 245.]
+    [[  0.   0.   0.]
+     [245. 245. 245.]
      [ 71.  71.  71.]
-     [  0.   0.   0.]
      [255. 145.  77.]
      [ 72.  72.  72.]], shape=(5, 3), dtype=float32)
     """
     scs = tf.reshape(tf_img, (-1, 3))
     scs = gen_array_ops.unique_v2(scs, axis=[-2])[0]
+
+    scs = remove_element(scs, [0, 0, 0])
     scs = tf.cond(
         tf.reduce_any(tf.reduce_all(tf.equal(scs, [0, 0, 0]), axis=-1)),
         lambda: scs,

@@ -75,9 +75,9 @@ class TestTFImage(TestCase):
     def test_tf_get_all_colors(self):
         # Expected Result
         sample_image_colors = [
+            [0.0, 0.0, 0.0],
             [245.0, 245.0, 245.0],
             [71.0, 71.0, 71.0],
-            [0.0, 0.0, 0.0],
             [255.0, 145.0, 77.0],
             [72.0, 72.0, 72.0],
         ]
