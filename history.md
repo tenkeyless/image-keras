@@ -1,5 +1,12 @@
 # Version History
 
+## 0.3.2
+
+- Date
+  - 2020-12-14
+- Contents
+  - Add some methods
+
 ## 0.3.1
 
 - Date
