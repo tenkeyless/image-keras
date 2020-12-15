@@ -1,4 +1,4 @@
-from __future__ import annotations
+# from __future__ import annotations
 from typing import Callable, Generic, TypeVar
 
 T = TypeVar("T")
@@ -18,7 +18,8 @@ class Monad(Generic[T]):
 
     # M = TypeVar("M", bound=Monad)
     # map :: # M a -> (a -> b) -> M b
-    def map(self, f: Callable[[T], T2]) -> M[T2]:  # type: ignore
+    # def map(self, f: Callable[[T], T2]) -> M[T2]:  # type: ignore
+    def map(self, f: Callable[[T], T2]) -> "M[T2]":  # type: ignore
         return self.flat_map(lambda x: self.pure(f(x)))
 
 
