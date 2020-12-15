@@ -1,5 +1,12 @@
 # Version History
 
+## 0.3.3
+
+- Date
+  - 2020-12-15
+- Contents
+  - Support python 3.6
+
 ## 0.3.2
 
 - Date
