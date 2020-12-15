@@ -1,4 +1,4 @@
-from __future__ import annotations
+# from __future__ import annotations
 from typing import Callable, Generic, Optional, TypeVar
 
 from .monad import Monad
@@ -14,11 +14,13 @@ class Option(Monad, Generic[S]):
 
     # pure :: a -> Option a
     @staticmethod
-    def pure(x: S) -> Option[S]:
+    # def pure(x: S) -> Option[S]:
+    def pure(x: S) -> "Option[S]":
         return Some(x)
 
     # flat_map :: # Option a -> (a -> Option b) -> Option b
-    def flat_map(self, f: Callable[[S], Option[S2]]) -> Option[S2]:
+    # def flat_map(self, f: Callable[[S], Option[S2]]) -> Option[S2]:
+    def flat_map(self, f: Callable[[S], "Option[S2]"]) -> "Option[S2]":
         if self.value is None:
             return f(self.value)
         else:

@@ -1,4 +1,4 @@
-from __future__ import annotations
+# from __future__ import annotations
 from typing import Callable, Generic, List, Optional, TypeVar
 
 from .monad import Monad
@@ -16,11 +16,13 @@ class Either(Monad, Generic[R, L]):
 
     # pure :: a -> Either a
     @staticmethod
-    def pure(right: R) -> Either[R, L]:
+    # def pure(right: R) -> Either[R, L]:
+    def pure(right: R) -> "Either[R, L]":
         return Right(right)
 
     # flat_map :: # Either a -> (a -> Either b) -> Either b
-    def flat_map(self, f: Callable[[R], Either[R2, L]]) -> Either[R2, L]:
+    # def flat_map(self, f: Callable[[R], Either[R2, L]]) -> Either[R2, L]:
+    def flat_map(self, f: Callable[[R], "Either[R2, L]"]) -> "Either[R2, L]":
         if self.left is not None:
             return self
         else:

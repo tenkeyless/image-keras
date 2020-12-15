@@ -1,4 +1,4 @@
-from __future__ import annotations
+# from __future__ import annotations
 from functools import reduce
 import threading
 from threading import Thread
@@ -22,7 +22,8 @@ class Future(Monad, Generic[D]):
 
     # pure :: a -> Future a
     @staticmethod
-    def pure(value: D) -> Future:
+    # def pure(value: D) -> Future:
+    def pure(value: D) -> "Future":
         # return Future(lambda cb: cb(Either.pure(value)))
         def _cbf(cb: Callable[[Either[D, Exception]], None]) -> None:
             return cb(Either.pure(value))
@@ -44,7 +45,8 @@ class Future(Monad, Generic[D]):
         t: Thread = threading.Thread(target=Future.exec, args=[f, cb])
         t.start()
 
-    def async_f(self, f: Callable[[], D]) -> Future:
+    # def async_f(self, f: Callable[[], D]) -> Future:
+    def async_f(self, f: Callable[[], D]) -> "Future":
         # return Future(lambda cb: Future.exec_on_thread(f, cb))
         def _cbf(cb: Callable[[Either[D, Exception]], None]) -> None:
             return Future.exec_on_thread(f, cb)
@@ -52,7 +54,8 @@ class Future(Monad, Generic[D]):
         return Future(_cbf)
 
     # flat_map :: (a -> Future b) -> Future b
-    def flat_map(self, f: Callable[[D], Future[D2]]) -> Future[D2]:
+    # def flat_map(self, f: Callable[[D], Future[D2]]) -> Future[D2]:
+    def flat_map(self, f: Callable[[D], "Future[D2]"]) -> "Future[D2]":
         def _cbf(cb: Callable[[Either[D, Exception]], None]) -> None:
             def _cbf2(value: Either[D, Exception]) -> None:
                 return value.fold(lambda r: f(r).subscribe(cb), lambda l: cb(value))
@@ -63,8 +66,10 @@ class Future(Monad, Generic[D]):
 
     # traverse :: [a] -> (a -> Future b) -> Future [b]
     def traverse(
-        self, arr: List[D]
-    ) -> Callable[[Callable[[D], Future[D2]]], Future[List[D2]]]:
+        self,
+        arr: List[D]
+        # ) -> Callable[[Callable[[D], Future[D2]]], Future[List[D2]]]:
+    ) -> Callable[[Callable[[D], "Future[D2]"]], "Future[List[D2]]"]:
         # return lambda f: reduce(
         #     lambda acc, elem: acc.flat_map(
         #         lambda values: f(elem).map(lambda value: values + [value])
