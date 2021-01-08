@@ -9,4 +9,4 @@ from .model_manager import *
 __path__ = extend_path(__path__, "custom")
 __path__ = extend_path(__path__, "utils")
 
-__version__ = "0.3.4"
+__version__ = "0.3.5"
