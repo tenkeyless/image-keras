@@ -1,5 +1,12 @@
 # Version History
 
+## 0.3.5
+
+- Date
+  - 2021-01-08
+- Contents
+  - Add inits
+
 ## 0.3.4
 
 - Date
